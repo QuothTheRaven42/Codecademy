@@ -1,0 +1,258 @@
+import random, sys
+
+money = 100
+print('You will start the day with $100!\nHAVE FUN!!\n')
+
+''' List of 4 game functions '''
+
+# Heads or Tails coinflip
+def coinflip(bet, choice):
+    global money
+    if choice.lower() == 'heads':
+        choice = 0
+    else:
+        choice = 1
+    pc_flip = random.randint(0, 1)
+
+    if pc_flip == choice:
+        money += bet
+        print(f'You won ${bet}!')
+        return f'You now have ${money} in your wallet.\n'
+    else:
+        money -= bet
+        print(f'You lost ${bet}!')
+        return f'You now have ${money} in your wallet.\n'
+
+# Cho-han, adding 2 dice and guessing if that number is Odd or Even
+def chohan(bet, choice):
+    global money
+
+    if choice.lower() == 'even':
+        choice = 0
+    else:
+        choice = 1
+    pc_flip = random.randint(1, 6)
+    pc_flip2 = random.randint(1, 6)
+    pc_flip_total = pc_flip + pc_flip2
+    pc_flip_added = (pc_flip + pc_flip2) % 2
+    print(f'Dealer flips and gets {pc_flip_total}!')
+    if pc_flip_added % 2 == choice:
+        money += bet
+        print(f'You won ${bet}!')
+        return f'You now have ${money} in your wallet.\n'
+    else:
+        money -= bet
+        print(f'You lost ${bet}!')
+        return f'You now have ${money} in your wallet.\n'
+
+# Pulling cards from a regular deck
+# The person with the highest number wins
+# Suit doesn't matter
+def card_pick(bet, choice1, choice, suit):
+    global money
+
+    pc_card1 = random.randint(1, 13)
+    pc_card = pc_card1
+    if pc_card1 == 1:
+        pc_card = 'Ace'
+    elif pc_card1 == 11:
+        pc_card = 'Jack'
+    elif pc_card1 == 12:
+        pc_card = 'Queen'
+    elif pc_card1 == 13:
+        pc_card = 'King('
+    else:
+        pc_card = pc_card1
+
+    pc_suit1 = random.randint(1,4)
+    if pc_suit1 == 1:
+        pc_suit = ' of Spades'
+    elif pc_suit1 == 2:
+        pc_suit = ' of Clubs'
+    elif pc_suit1 == 3:
+        pc_suit = ' of Hearts'
+    else:
+        pc_suit = ' of Diamonds'
+
+    print(f'Dealer pulls {pc_card}{pc_suit} ... Player pulls {choice}{suit}')
+    if choice1 < pc_card1:
+        money -= bet
+        print(f'You lost ${bet}!')
+        return f'You now have ${money} in your wallet.\n'
+    elif choice1 > pc_card1:
+        money += bet
+        print(f'You won ${bet}!')
+        return f'You now have ${money} in your wallet.\n'
+    else:
+        return f'It was a tie! No money gained or lost.\n'
+
+
+# Roulette, with the rules tweaked here and there
+def roulette(bet):
+    global money
+
+    print('Are you betting on:\n')
+    print('[1] color\n[2] odd/even\n[3] number\n[4] number + color ')
+    choice = int(input('Please make your selection: '))
+
+    pc_roll = random.randint(0, 37)
+    if pc_roll == 37:
+        pc_roll = 00
+    pc_color = random.randint(0, 1)
+    if pc_color == 0:
+        pc_color = 'black'
+    else:
+        pc_color = 'red'
+
+
+    if pc_roll == 0 or 00:
+        print(f'Spinning ... {pc_roll} {pc_color}!')
+        money -= bet
+        print(f'You lost ${bet}! (0 and 00 always loses)')
+        return f'You now have ${money} in your wallet.\n'
+
+    if choice == 1:
+        color = input('[Red] or [Black]? ')
+        print(f'Spinning ... {pc_roll} {pc_color}!')
+        if color.lower() == pc_color:
+            money += bet
+            print(f'You won ${bet}!')
+            return f'You now have ${money} in your wallet.\n'
+        else:
+            money -= bet
+            print(f'You lost ${bet}!')
+            return f'You now have ${money} in your wallet.\n'
+
+
+    if choice == 2:
+        odd_even = input('[Odd] or [Even]? ')
+        print(f'Spinning ... {pc_roll} {pc_color}!')
+        if odd_even.lower() == 'even':
+            if pc_roll % 2 == 0:
+                money += bet
+                print(f'You won ${bet}!')
+                return f'You now have ${money} in your wallet.\n'
+            elif pc_roll % 2 == 1:
+                money -= bet
+                print(f'You lost ${bet}!')
+                return f'You now have ${money} in your wallet.\n'
+        else:
+            if pc_roll % 2 == 1:
+                money += bet
+                print(f'You won ${bet}!')
+                return f'You now have ${money} in your wallet.\n'
+            elif pc_roll % 2 == 0:
+                money -= bet
+                print(f'You lost ${bet}!')
+                return f'You now have ${money} in your wallet.\n'
+
+        if odd_even.lower() == 'odd':
+            if pc_roll % 2 == 1:
+                money += bet
+                print(f'You won ${bet}!')
+                return f'You now have ${money} in your wallet.\n'
+        elif odd_even.lower() == 'even':
+            if pc_roll % 2 == 2:
+                money -= bet
+                print(f'You lost ${bet}!')
+                return f'You now have ${money} in your wallet.\n'
+
+    if choice == 3:
+        number_choice = int(input('\nChoose a number between 1 and 36: '))
+        print(f'Spinning ... {pc_roll} {pc_color}!')
+        if number_choice == pc_roll:
+            money += bet * 2
+            print(f'You won ${bet * 2}!')
+            return f'You now have ${money} in your wallet.\n'
+        elif number_choice != pc_roll:
+            money -= bet * 2
+            print(f'You lost ${bet * 2}!')
+            return f'You now have ${money} in your wallet.\n'
+
+    elif choice == 4:
+        number = int(input('Choose a number between 1 and 36: '))
+        color = input('Choose a color: ')
+        print(f'Spinning ... {pc_roll} {pc_color}!')
+        if number == pc_roll and color != pc_color:
+            money += bet * 2
+            print(f'You won ${bet * 2} on half!')
+            return f'You now have ${money} in your wallet.\n'
+        elif number != pc_roll and color == pc_color:
+            money += bet * 2
+            print(f'You won ${bet * 2} on half!')
+            return f'You now have ${money} in your wallet.\n'
+        if number == pc_roll and color == pc_color:
+            money += bet * 4
+            print(f'You won ${bet * 4}!')
+            return f'You now have ${money} in your wallet.\n'
+        elif number != pc_roll and color != pc_color:
+            money -= bet * 4
+            print(f'You lost ${bet * 4}!')
+            return f'You now have ${money} in your wallet.\n'
+
+''' Checking if any money remains for betting '''
+while True:
+    if money <= 0:
+        print('Sorry, you have run out of money.\n')
+        print('Please return to the front desk if you have more money.\n\n')
+        print('THANK YOU FOR YOUR PATRONAGE!!')
+        sys.exit()
+
+    ''' Checking if the player wishes to leave with their current earnings '''
+    quitting = input('Would you like to leave with your earnings? [Yes] or [No] ')
+    if quitting.lower() == 'yes':
+        print(f'Today, your earnings total ${money - 100}, for a total of ${money}!')
+        print('WOW!\n\nTHANK YOU FOR YOUR PATRONAGE!')
+        sys.exit()
+
+    ''' Game of Chance functions '''
+    print('\nChoose a game:\n''[1] Coinflipper\n[2] Cho-han\n[3] Cardpicker\n[4] Roulette\n\n')
+    game_choice = int(input('Enter your choice: '))
+    bet = int(input('How much do you want to bet: '))
+
+    # Coinflip
+    if game_choice == 1:
+        choice = input('Did you get Heads or Tails? ')
+        print(coinflip(bet, choice))
+
+    # Cho-han
+    if game_choice == 2:
+        choice = input('Will the added dice be [Odd] or [Even]? ')
+        print(chohan(bet, choice))
+
+    # Cardpicker
+    if game_choice == 3:
+
+        # Dealer card pull
+        # Card number or face
+        choice1 = random.randint(1, 13)
+        choice = choice1
+        if choice1 == 1:
+            choice = 'Ace'
+        elif choice1 == 11:
+            choice = 'Jack'
+        elif choice1 == 12:
+            choice = 'Queen'
+        elif choice1 == 13:
+            choice = 'King'
+        else:
+            choice = choice1
+
+        # Dealer suit pull
+        # Only for realism
+        suit = random.randint(1,4)
+        if suit == 1:
+            suit = ' of Spades'
+        elif suit == 2:
+            suit = ' of Clubs'
+        elif suit == 3:
+            suit = ' of Hearts'
+        else:
+            suit = ' of Diamonds'
+
+        print(card_pick(bet, choice1, choice, suit))
+
+    # Roulette
+    if game_choice == 4:
+
+        print(roulette(bet))
